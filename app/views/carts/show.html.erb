@@ -1,0 +1,46 @@
+<section class="section">
+  <div class="container">
+    <h2 class="title is-3 mb-5">Your Cart</h2>
+
+    <% if @cart_items.any? %>
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th class="has-text-centered">Quantity</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @cart_items.each do |item| %>
+            <tr>
+              <td><%= item.product.title %></td>
+              <td class="has-text-centered">
+                <div class="buttons has-addons is-centered">
+                  <%= button_to '+', increase_item_cart_path(item.product), method: :post, class: "button is-small" %>
+                  <span class="button is-static is-small"><%= item.quantity %></span>
+                  <%= button_to '-', decrease_item_cart_path(item.product), method: :post, class: "button is-small" %>
+                </div>
+              </td>
+              <td><%= number_to_currency(item.product.price) %></td>
+              <td><%= number_to_currency(item.product.price * item.quantity) %></td>
+              <td>
+                <%= link_to "Remove", remove_item_cart_path(item.product), method: :delete, class: "button is-small is-danger" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <div class="has-text-right mt-4">
+        <p class="is-size-5"><strong>Total:</strong> <%= number_to_currency(@cart_items.sum { |item| item.product.price * item.quantity }) %></p>
+
+        <%= button_to 'Empty Cart', empty_cart_path, method: :delete, data: { confirm: 'Are you sure?' }, class: "button is-danger mt-2" %>
+      </div>
+    <% else %>
+      <p class="has-text-grey">Your cart is empty.</p>
+    <% end %>
+  </div>
+</section>
